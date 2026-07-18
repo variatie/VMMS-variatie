@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050607">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>VMMS Variatie · 4.1 Drive Fotoarchief · 2026-07-18</title>
+<link rel="manifest" href="manifest.json?v=4.1.0-drive-fotoarchief-20260718">
+<link rel="icon" href="vmms-logo-192.png" type="image/png">
+<link rel="stylesheet" href="styles.css?v=4.1.0-drive-fotoarchief-20260718">
+</head>
+<body class="security-locked">
+
+<div id="securityScreen" class="security-screen" role="dialog" aria-modal="true" aria-labelledby="securityTitle">
+  <div class="security-card">
+    <div class="security-logo"><img src="vmms-logo-192.png" alt="VMMS Variatie logo"></div>
+    <span class="security-kicker">VMMS Variatie</span>
+    <h1 id="securityTitle">Voer de pincode in</h1>
+    <p>Deze VMMS-omgeving is afgeschermd. Voer de viercijferige pincode in om verder te gaan.</p>
+    <form id="securityForm" autocomplete="off">
+      <label for="securityPin">Pincode</label>
+      <input id="securityPin" name="pin" type="password" inputmode="numeric" pattern="[0-9]*"
+             maxlength="4" autocomplete="off" enterkeyhint="done" aria-describedby="securityMessage">
+      <button id="securitySubmit" class="btn" type="submit">VMMS openen</button>
+    </form>
+    <div class="security-divider"><span>of</span></div>
+    <button id="googleSecurityLogin" class="btn google-login" type="button">G Inloggen met Google</button>
+    <div id="securityMessage" class="security-message" aria-live="polite"></div>
+    <small>De app vergrendelt automatisch na 15 minuten zonder gebruik.</small>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo"><img src="vmms-logo-192.png" alt="VMMS Variatie logo"></div><div><h1>VMMS</h1><small>Variatie · 1925</small></div></div>
+    <nav class="nav" id="desktopNav">
+      <button data-view="dashboard" class="active">⌂ Dashboard</button>
+      <button data-view="ship">⚓ Scheepsgegevens</button>
+      <button data-view="workorder">＋ Nieuwe werkbon</button>
+      <button data-view="objects">◫ Objecten</button>
+      <button data-view="maintenance">⚙ Onderhoud</button>
+      <button data-view="inspections">◉ Inspecties</button>
+      <button data-view="photos">☷ Foto's</button>
+      <button data-view="inspiration">★ Inspiratie</button>
+      <button data-view="manuals">▥ Handleidingen</button>
+      <button data-view="logbook">≡ Logboek</button>
+      <button data-view="projects">◇ Projecten</button>
+      <button data-view="paintplan">▨ Verfplan</button>
+      <button data-view="restoration">⚒ Restauratie</button>
+      <button data-view="ballast">▰ Ballastplanner</button>
+      <button data-view="victron">◉ Victron</button>
+      <button data-view="costs">€ Kosten</button>
+      <div class="sep"></div>
+      <button data-view="parts">♻ Restauratie-inkoop</button>
+      <button data-view="documents">▤ Documenten</button>
+      <button data-view="settings">⚙ Instellingen</button>
+    </nav>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <h2 id="pageTitle">Dashboard</h2>
+      <div class="top-actions">
+        <span id="saveStatus" class="install-hint">Lokaal opgeslagen</span>
+        <button id="driveBtn" class="icon-btn sync-btn" type="button" title="Google Drive">☁ Drive verbinden</button>
+        <button id="themeBtn" class="icon-btn" type="button" title="Donkere modus">◐</button>
+        <button id="reportBtn" class="icon-btn" type="button" title="PDF-rapport">PDF</button>
+        <button id="lockBtn" class="icon-btn lock-btn" type="button" title="VMMS vergrendelen">🔒</button>
+        <button id="installBtn" class="btn secondary hide-mobile" hidden>App installeren</button>
+        <button class="btn" data-view="workorder">Nieuwe werkbon</button>
+      </div>
+    </header>
+    <div class="content">
+      <section id="view-dashboard" class="view active"></section>
+      <section id="view-ship" class="view"></section>
+      <section id="view-workorder" class="view"></section>
+      <section id="view-objects" class="view"></section>
+      <section id="view-objectdetail" class="view"></section>
+      <section id="view-maintenance" class="view"></section>
+      <section id="view-inspections" class="view"></section>
+      <section id="view-photos" class="view"></section>
+      <section id="view-inspiration" class="view"></section>
+      <section id="view-manuals" class="view"></section>
+      <section id="view-logbook" class="view"></section>
+      <section id="view-projects" class="view"></section>
+      <section id="view-paintplan" class="view"></section>
+      <section id="view-restoration" class="view"></section>
+      <section id="view-ballast" class="view"></section>
+      <section id="view-victron" class="view"></section>
+      <section id="view-costs" class="view"></section>
+      <section id="view-parts" class="view"></section>
+      <section id="view-documents" class="view"></section>
+      <section id="view-settings" class="view"></section>
+    </div>
+  </main>
+</div>
+<nav class="mobile-nav" id="mobileNav">
+  <button data-view="dashboard" class="active"><b>⌂</b>Dashboard</button>
+  <button data-view="workorder"><b>＋</b>Werkbon</button>
+  <button data-view="maintenance"><b>⚙</b>Onderhoud</button>
+  <button data-view="objects"><b>◫</b>Objecten</button>
+  <button data-view="logbook"><b>≡</b>Logboek</button>
+  <button id="mobileMoreBtn" type="button"><b>•••</b>Meer</button>
+</nav>
+<dialog id="editDialog" class="dialog">
+  <div class="dialog-head"><h3 id="dialogTitle">Bewerken</h3><button class="icon-btn" id="dialogClose">✕</button></div>
+  <div class="dialog-body" id="dialogBody"></div>
+</dialog>
+<div class="toast" id="toast"></div>
+<script src="seed-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="drive-config.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="restoration-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="photo-library-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="inspiration-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="paint-restoration-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="mayday-maintenance-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="app.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+</body>
+</html>

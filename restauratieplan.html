@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Restauratieplan Variatie – geïntegreerd VMMS-dossier</title>
+<style>
+body{font-family:Arial,sans-serif;color:#172b38;margin:0;background:#eef4f7;line-height:1.45}
+main{max-width:1100px;margin:auto;background:white;padding:36px}
+header{border-bottom:5px solid #123b5d;padding-bottom:20px}
+h1,h2,h3{color:#123b5d}h1{margin-bottom:5px}.subtitle{font-size:19px}
+.warning{background:#fff3c7;border:1px solid #dab44b;padding:14px;border-radius:9px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
+.kpi{border:1px solid #ccd9e0;border-radius:10px;padding:12px}.kpi b{display:block;font-size:21px}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:12px 0 24px}
+th,td{border:1px solid #d4dde3;padding:7px;text-align:left;vertical-align:top}th{background:#eaf2f6}
+.package{break-inside:avoid;border-top:2px solid #dae5eb;padding-top:6px}li{margin:4px 0}
+button{padding:10px 14px;border:0;border-radius:8px;background:#123b5d;color:white;font-weight:bold}
+@media(max-width:700px){main{padding:20px}.kpis{grid-template-columns:1fr 1fr}.table-wrap{overflow:auto}}
+@media print{body{background:white}main{max-width:none;padding:8mm}button{display:none}.page-break{break-before:page}}
+</style>
+</head>
+<body><main>
+<header>
+<p>SCHEEPSRESTAURATIE · TECHNISCH PROJECTDOSSIER</p>
+<h1>VARIATIE</h1>
+<p class="subtitle">Restauratie naar de historische buitenstaat</p>
+<p>Stuurhut verwijderen · achterdek reconstrueren · zeiltuig, zwaarden en lieren herstellen</p>
+<button onclick="print()">Afdrukken / opslaan als PDF</button>
+</header>
+<h2>Projectkader</h2>
+<div class="warning"><b>Documentstatus:</b> niet vrijgegeven voor uitvoering. Definitieve maten en constructies pas uitvoeren na opname aan boord, constructieve berekening en akkoord van de keuringsinstantie.</div>
+<div class="kpis">
+<div class="kpi">Doelperiode<b>1925–1931</b></div>
+<div class="kpi">Restauratieklasse<b>Historisch functioneel</b></div>
+<div class="kpi">Werkpakketten<b>12</b></div>
+<div class="kpi">Projecttaken<b>60</b></div>
+<div class="kpi">Begrote uren<b>2.160</b></div>
+<div class="kpi">Reservering laag<b>€ 164.400</b></div>
+<div class="kpi">Reservering hoog<b>€ 468.000</b></div>
+<div class="kpi">Doorlooptijd<b>Maand 1–15</b></div>
+</div>
+<h2>Werkpakketten</h2>
+<div class="table-wrap"><table><thead><tr><th>ID</th><th>Werkpakket</th><th>Fase</th><th>Eigenaar</th><th>Planning</th><th>Uren</th><th>Kosten</th><th>Hold point</th></tr></thead><tbody><tr>
+      <td>WP-REST-01</td><td>Historisch onderzoek en documentatie</td>
+      <td>Onderzoek</td><td>Projectcoördinator</td>
+      <td>Maand 1–2</td><td>80</td>
+      <td>€ 6.000 – € 12.000</td>
+      <td>HP-01</td>
+    </tr>
+<tr>
+      <td>WP-REST-02</td><td>Technische opname huidige toestand</td>
+      <td>Onderzoek</td><td>Constructeur</td>
+      <td>Maand 1–2</td><td>80</td>
+      <td>€ 6.000 – € 18.000</td>
+      <td>HP-02</td>
+    </tr>
+<tr>
+      <td>WP-REST-03</td><td>Voorbereiding en verwijderen stuurhut</td>
+      <td>Demontage</td><td>Scheepswerf</td>
+      <td>Maand 7–7</td><td>80</td>
+      <td>€ 5.000 – € 15.000</td>
+      <td>HP-03</td>
+    </tr>
+<tr>
+      <td>WP-REST-04</td><td>Constructief herstel achterdek</td>
+      <td>Werf</td><td>Scheepswerf</td>
+      <td>Maand 7–10</td><td>400</td>
+      <td>€ 20.000 – € 50.000</td>
+      <td>HP-04 / HP-07</td>
+    </tr>
+<tr>
+      <td>WP-REST-05</td><td>Stuurstand en technische systemen</td>
+      <td>Werf</td><td>Stuurwerkspecialist</td>
+      <td>Maand 8–10</td><td>160</td>
+      <td>€ 10.000 – € 30.000</td>
+      <td>HP-04</td>
+    </tr>
+<tr>
+      <td>WP-REST-06</td><td>Mastfundatie en strijkinstallatie</td>
+      <td>Werf</td><td>Constructeur + scheepswerf</td>
+      <td>Maand 7–10</td><td>240</td>
+      <td>€ 12.000 – € 30.000</td>
+      <td>HP-04 / HP-05</td>
+    </tr>
+<tr>
+      <td>WP-REST-07</td><td>Mast, rondhouten en tuigage</td>
+      <td>Tuigage</td><td>Tuigagebedrijf</td>
+      <td>Maand 10–13</td><td>260</td>
+      <td>€ 18.000 – € 40.000</td>
+      <td>HP-05</td>
+    </tr>
+<tr>
+      <td>WP-REST-08</td><td>Zeilen</td>
+      <td>Tuigage</td><td>Zeilmaker</td>
+      <td>Maand 10–13</td><td>80</td>
+      <td>€ 15.000 – € 40.000</td>
+      <td>HP-05</td>
+    </tr>
+<tr>
+      <td>WP-REST-09</td><td>Zwaarden en zwaardlieren</td>
+      <td>Werf</td><td>Scheepswerf + constructeur</td>
+      <td>Maand 8–12</td><td>300</td>
+      <td>€ 20.000 – € 55.000</td>
+      <td>HP-06</td>
+    </tr>
+<tr>
+      <td>WP-REST-10</td><td>Lieren en dekbeslag</td>
+      <td>Werf</td><td>Lierenspecialist</td>
+      <td>Maand 8–12</td><td>160</td>
+      <td>€ 10.000 – € 30.000</td>
+      <td>HP-06</td>
+    </tr>
+<tr>
+      <td>WP-REST-11</td><td>Conservering en historische afwerking</td>
+      <td>Afbouw</td><td>Scheepswerf</td>
+      <td>Maand 10–13</td><td>240</td>
+      <td>€ 10.000 – € 25.000</td>
+      <td>HP-07</td>
+    </tr>
+<tr>
+      <td>WP-REST-12</td><td>Keuring, proefvaart en oplevering</td>
+      <td>Oplevering</td><td>Keuringsinstantie</td>
+      <td>Maand 13–15</td><td>80</td>
+      <td>€ 5.000 – € 15.000</td>
+      <td>HP-08</td>
+    </tr></tbody></table></div>
+<h2>Hold points</h2>
+<table><thead><tr><th>ID</th><th>Voorwaarde</th><th>Vrijgave door</th></tr></thead><tbody><tr><td>HP-01</td><td>Keuringsstrategie en vereiste stukken schriftelijk bevestigd</td><td>Keuringsinstantie</td></tr><tr><td>HP-02</td><td>Opname, maatvoering, plaatdiktemeting en technische nulmeting compleet</td><td>Constructeur + scheepswerf</td></tr><tr><td>HP-03</td><td>Stuurhut veilig verwijderd; tijdelijke bediening en conservering akkoord</td><td>Scheepswerf + constructeur</td></tr><tr><td>HP-04</td><td>Constructie achterdek, stuurstand en mastfundatie vrijgegeven</td><td>Constructeur + keuringsinstantie</td></tr><tr><td>HP-05</td><td>Mast-, tuig-, zeil- en stabiliteitsplan vrijgegeven</td><td>Constructeur + tuigagebedrijf</td></tr><tr><td>HP-06</td><td>Zwaarden, zwaardbouten, lierfundaties en bediening vrijgegeven</td><td>Constructeur + keuringsinstantie</td></tr><tr><td>HP-07</td><td>Lasinspectie, waterdichtheid en conserveringssysteem geaccepteerd</td><td>Keuringsbedrijf + scheepswerf</td></tr><tr><td>HP-08</td><td>Eindinspectie, proeven, as-built dossier en certificaat gereed</td><td>Keuringsinstantie + eigenaar</td></tr><tr><td>HP-09</td><td>Geen dragend, remmend of veiligheidskritisch tweedehands onderdeel monteren vóór maatcontrole, inspectie en vereiste deskundige vrijgave</td><td>Constructeur / specialist</td></tr><tr><td>HP-10</td><td>Geen definitief verfsysteem aanbrengen vóór opname van bestaande lagen, hechtingstest en compatibiliteitscontrole</td><td>Werf / coatingspecialist</td></tr><tr><td>HP-11</td><td>Geen mast, zwaard of lier kopen vóór maatblad en belastingsuitgangspunten zijn vastgelegd</td><td>Projectleider + constructeur</td></tr></tbody></table>
+<h2>Ontwerpdocumenten</h2>
+<table><thead><tr><th>ID</th><th>Document</th><th>Status</th><th>Eigenaar</th></tr></thead><tbody><tr><td>D-001</td><td>Algemeen plan – huidige toestand</td><td>Te maken na opname</td><td>Constructeur</td></tr><tr><td>D-002</td><td>Algemeen plan – historische doeltoestand 1925–1931</td><td>Te maken</td><td>Historisch adviseur</td></tr><tr><td>D-003</td><td>Sloop- en demontageplan stuurhut</td><td>Te maken</td><td>Scheepswerf</td></tr><tr><td>D-004</td><td>Constructieplan achterdek en dekbalken</td><td>Te berekenen</td><td>Constructeur</td></tr><tr><td>D-005</td><td>Stuurinrichting en motorbediening</td><td>Te ontwerpen</td><td>Stuurwerkspecialist</td></tr><tr><td>D-006</td><td>Mastvoet, mastkoker en mastdek</td><td>Te berekenen</td><td>Constructeur</td></tr><tr><td>D-007</td><td>Tuig- en zeilplan</td><td>Te ontwerpen</td><td>Tuigagebedrijf + zeilmaker</td></tr><tr><td>D-008</td><td>Wantputtings en dekbeslag</td><td>Te berekenen</td><td>Constructeur</td></tr><tr><td>D-009</td><td>Zwaard, zwaardbout en huidversterking</td><td>Te ontwerpen</td><td>Constructeur + scheepswerf</td></tr><tr><td>D-010</td><td>Lieropstelling en fundaties</td><td>Te ontwerpen</td><td>Constructeur + lierenspecialist</td></tr><tr><td>D-011</td><td>Elektrisch, navigatie en PV na verwijderen stuurhut</td><td>Te ontwerpen</td><td>Elektrotechnisch ontwerper</td></tr><tr><td>D-012</td><td>Gewichts- en stabiliteitsdossier</td><td>Te berekenen</td><td>Constructeur</td></tr><tr><td>D-013</td><td>Conserverings- en kleurplan</td><td>Te bepalen</td><td>Scheepswerf + historisch adviseur</td></tr><tr><td>D-014</td><td>As-built dossier</td><td>Na uitvoering</td><td>Projectcoördinator</td></tr></tbody></table>
+
+<h2>Verfplan en conserveringsstrategie</h2>
+<div class="warning"><b>Concept:</b> de definitieve productkeuze, laagopbouw en overschildertijd worden pas vastgesteld na opname van bestaande lagen, hechtingsproeven, compatibiliteitscontrole en actuele productbladen.</div>
+<table><thead><tr><th>Zone</th><th>Ondergrond</th><th>Voorgenomen aanpak</th><th>Status</th></tr></thead><tbody>
+<tr><td>Romp boven water</td><td>Staal</td><td>Roest en losse lagen verwijderen; primer, tussenlaag en UV-bestendige aflak na proefvlak</td><td>Onderzoeken</td></tr>
+<tr><td>Onderwaterschip</td><td>Staal onder waterlijn</td><td>Bij droogzetten reinigen, laagopbouw en antifoulingtype vaststellen</td><td>Onderzoeken</td></tr>
+<tr><td>Dek en gangboorden</td><td>Beloopbaar staal</td><td>Slijtvast systeem met afgebakende antislipzones en vrije afwatering</td><td>Onderzoeken</td></tr>
+<tr><td>Historisch achterdek</td><td>Nieuw en bestaand staal</td><td>Verborgen vlakken vóór montage conserveren; beschadigingen na laswerk herstellen</td><td>Concept</td></tr>
+<tr><td>Mast, giek en gaffel</td><td>Toekomstig hout en metaal</td><td>Lak- of verfsysteem na keuze houtsoort, detaillering en historische uitstraling</td><td>Concept</td></tr>
+<tr><td>Zwaarden en lieren</td><td>Staal en mechanische delen</td><td>Constructieve inspectie vóór conservering; rem-, lager- en contactvlakken vrijhouden</td><td>Concept</td></tr>
+</tbody></table>
+<h2>Tweedehands onderdelen en hergebruik</h2>
+<p>Tweedehands wordt onderzocht voor mast en rondhouten, zwaarden, zwaardlieren, schootlier, maststrijklier, blokken, klassiek dekbeslag en buitenstuurstand. Gebruikt draadwant en andere onderdelen met moeilijk aantoonbare materiaalhistorie worden alleen overwogen na expliciete specialistische beoordeling.</p>
+<table><thead><tr><th>Onderdeelgroep</th><th>Voor aankoop vastleggen</th><th>Na vondst beoordelen</th><th>Vrijgave</th></tr></thead><tbody>
+<tr><td>Mast, giek en gaffel</td><td>Maten, materiaal, gewicht, beslagposities en tuigplan</td><td>Rot, scheuren, vervorming, vocht, aanpassingen en transport</td><td>Tuiger + constructeur</td></tr>
+<tr><td>Zwaarden</td><td>Profiel, gewicht, zwaardboutpositie en ruimte langs de huid</td><td>Scheuren, vervorming, corrosie, maatvoering en revisiekosten</td><td>Constructeur + werf</td></tr>
+<tr><td>Lieren</td><td>Veilige werklast, trommel, overbrenging, rem en fundatie</td><td>Tandwielen, pallen, rem, lagering, scheuren en proefbelasting</td><td>Constructeur / lierenspecialist</td></tr>
+<tr><td>Blokken en dekbeslag</td><td>Lijnmaat, belasting, bevestiging en historische positie</td><td>Slijtage, materiaal, scheuren, schijven en passendheid</td><td>Tuiger / werf</td></tr>
+<tr><td>Zeilen</td><td>Definitief tuig- en zeilplan</td><td>Volledige maten, doekstaat, vorm en reparatiekosten</td><td>Zeilmaker</td></tr>
+</tbody></table>
+<p><b>Kostenvergelijking:</b> iedere kandidaat wordt beoordeeld op aankoopprijs plus transport, revisie, aanpassing, inspectie en constructieve werkzaamheden. De goedkoopste advertentie is daardoor niet automatisch de goedkoopste eindoplossing.</p>
+<div class="page-break"><h2>Werkpakketten en taken</h2><section class="package"><h3>WP-REST-01 · Historisch onderzoek en documentatie</h3>
+    <p><b>Gereed wanneer:</b> Vrijgegeven historische doeltekening</p>
+    <ol><li>Historische foto’s in hoogste beschikbare resolutie verzamelen en dateren</li><li>Meetbrief-, kadaster- en brandmerkgegevens completeren</li><li>Vergelijkbare steilstevens selecteren voor ontbrekende details</li><li>Historische doeltekening maken met bronverwijzing per detail</li><li>LVBHB-schouwcommissie raadplegen en RVEN/BHS-registratie bijwerken</li></ol></section>
+<section class="package"><h3>WP-REST-02 · Technische opname huidige toestand</h3>
+    <p><b>Gereed wanneer:</b> Opnamerapport en technische nulmeting</p>
+    <ol><li>Fotoreportage rondom, dek, roef, stuurhut, machinekamer en onderzijde achterdek maken</li><li>Dek, spanten, luiken, stuurhutvoet en bestaande verstevigingen inmeten</li><li>Huid- en plaatdikten rond mastvoet, wantputtings en zwaardbouten meten</li><li>Kabels, leidingen, besturing en ventilatie door de stuurhut inventariseren</li><li>Oude gaten, dubbelen, fundaties en lasnaden op historische functie onderzoeken</li></ol></section>
+<section class="package"><h3>WP-REST-03 · Voorbereiding en verwijderen stuurhut</h3>
+    <p><b>Gereed wanneer:</b> Veilig vrijgemaakt en geconserveerd achterschip</p>
+    <ol><li>Stuurhut intern leegmaken en alle systemen labelen</li><li>Tijdelijke stuur- en motorbediening voor werfverplaatsingen organiseren</li><li>Hijspunten en gewicht van de stuurhut bepalen</li><li>Stuurhut bij voorkeur als geheel losnemen en tijdelijk opslaan</li><li>Vrijgekomen dek direct droogzetten, reinigen en conserveren</li></ol></section>
+<section class="package"><h3>WP-REST-04 · Constructief herstel achterdek</h3>
+    <p><b>Gereed wanneer:</b> Waterdicht en berekend achterdek</p>
+    <ol><li>Aangetast of niet-passend staal volgens goedgekeurde slooptekening verwijderen</li><li>Dekbalken, knieën, dekplaat en waterafvoer opnieuw opbouwen</li><li>Luiken, opstanden en roefdetails historisch passend uitvoeren</li><li>Fundaties voor stuurwerk, schootlier en achterste tuigbeslag integreren</li><li>Laswerk inspecteren en dek op waterdichtheid testen</li></ol></section>
+<section class="package"><h3>WP-REST-05 · Stuurstand en technische systemen</h3>
+    <p><b>Gereed wanneer:</b> Volledig bedienbare lage buitenstuurstand</p>
+    <ol><li>Definitieve stuurvorm kiezen op basis van historie en veilig gebruik</li><li>Stuurleiding, ketting/kabel of hydrauliek opnieuw traceren en beveiligen</li><li>Motorbediening, noodstop, communicatie en essentiële meters verplaatsen</li><li>Navigatie, verlichting, antennes en eventuele camera’s discreet integreren</li><li>Noodstuurprocedure opstellen en beproeven</li></ol></section>
+<section class="package"><h3>WP-REST-06 · Mastfundatie en strijkinstallatie</h3>
+    <p><b>Gereed wanneer:</b> Vrijgegeven mastfundatie en strijkinrichting</p>
+    <ol><li>Historische mastpositie bepalen en constructief verifiëren</li><li>Mastvoet of mastkoker met afdracht naar spanten en vlak bouwen</li><li>Mastdek en dekdoorvoering waterdicht en inspecteerbaar maken</li><li>Strijklier, strijkwant en veilige aanslagpunten ontwerpen</li><li>Werkprocedure en bemanningsposities voor maststrijken vastleggen</li></ol></section>
+<section class="package"><h3>WP-REST-07 · Mast, rondhouten en tuigage</h3>
+    <p><b>Gereed wanneer:</b> Complete en gekeurde mast en tuigage</p>
+    <ol><li>Materiaalkeuze van mast en rondhouten onderbouwen vanuit historie, gewicht en onderhoud</li><li>Mast, giek en gaffel volgens berekende maten produceren</li><li>Staand want, voorstag, zijwanten en eventuele bakstagen monteren</li><li>Lopend want, vallen, dirken, reven en schoten ergonomisch inrichten</li><li>Beslag, blokken en terminals inspecteerbaar en op veilige werklast specificeren</li></ol></section>
+<section class="package"><h3>WP-REST-08 · Zeilen</h3>
+    <p><b>Gereed wanneer:</b> Zeilset met meetstaat en gebruiksgrenzen</p>
+    <ol><li>Definitief zeilplan op stabiliteit en kleine bemanning afstemmen</li><li>Gaffelgrootzeil met voldoende reven ontwerpen</li><li>Fok en eventuele kluiver alleen opnemen als dit historisch en technisch passend is</li><li>Zeildoek, snit, beslag en kleur historisch coherent kiezen</li><li>Reefschema en windgrenzen tijdens proefvaart vastleggen</li></ol></section>
+<section class="package"><h3>WP-REST-09 · Zwaarden en zwaardlieren</h3>
+    <p><b>Gereed wanneer:</b> Twee veilig werkende zijzwaarden</p>
+    <ol><li>Historische zwaardvorm en positie uit foto’s en fysieke sporen reconstrueren</li><li>Zwaardprofiel, gewicht, zwaardbout en lokale huidversterking berekenen</li><li>Twee stalen zwaarden produceren en conserveren</li><li>Historische of gereviseerde zwaardlieren met afscherming monteren</li><li>Bediening aan de wal en tijdens zeilen beproeven</li></ol></section>
+<section class="package"><h3>WP-REST-10 · Lieren en dekbeslag</h3>
+    <p><b>Gereed wanneer:</b> Veilige en onderhoudbare lierinstallatie</p>
+    <ol><li>Schootlier, maststrijklier en eventuele val- of laadlier specificeren</li><li>Historische lieren vóór inkoop op scheuren, slijtage en remwerking onderzoeken</li><li>Fundaties en boutverbindingen op maximale lijnlast berekenen</li><li>Tandwielen, pallen en knelzones veilig afschermen</li><li>Smeer-, inspectie- en bedieningsinstructies in VMMS opnemen</li></ol></section>
+<section class="package"><h3>WP-REST-11 · Conservering en historische afwerking</h3>
+    <p><b>Gereed wanneer:</b> Gedocumenteerd conserveringssysteem</p>
+    <ol><li>Ondergrond, lasnaden en nieuwe platen volgens het verfsysteem voorbereiden</li><li>Kleuronderzoek op beschermde oude lagen uitvoeren</li><li>Dek, roef, rondhouten, zwaarden en lieren als historisch geheel afwerken</li><li>Antislip en veiligheidsmarkering terughoudend integreren</li><li>Nulmeting van laagdiktes en onderhoudsinterval vastleggen</li></ol></section>
+<section class="package"><h3>WP-REST-12 · Keuring, proefvaart en oplevering</h3>
+    <p><b>Gereed wanneer:</b> Goedgekeurd en zeilklaar schip met compleet dossier</p>
+    <ol><li>Eindinspectie van staal, mast, tuigage, zwaarden, lieren en stuurwerk uitvoeren</li><li>Havenproef, motorproef en maststrijkproef uitvoeren</li><li>Zeilproeven in oplopende wind met constructeur en tuigagebedrijf uitvoeren</li><li>As-built tekeningen, certificaten en onderhoudstaken verzamelen</li><li>Definitieve acceptatiepunten sluiten en project aan beheer overdragen</li></ol></section></div>
+</main></body></html>
