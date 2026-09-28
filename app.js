@@ -1,7 +1,7 @@
 
 (() => {
 'use strict';
-const VMMS_BUILD='4.1.0-drive-fotoarchief-20260718';
+const VMMS_BUILD='4.3.0-assistent-20260924';
 const STORAGE_KEY='vmms_variatie_data_v1';
 const DRIVE_ENABLED_KEY='vmms_drive_enabled_v1';
 const DRIVE_FILE_ID_KEY='vmms_drive_file_id_v1';
@@ -29,7 +29,7 @@ const LAST_SUMMARY_NOTIFY_KEY='vmms_last_summary_notify_v1';
 const DRIVE_PHOTO_CACHE=new Map();
 const LIBRARY_PHOTO_CACHE=new Map();
 let libraryPhotoObserver=null;
-const titles={dashboard:'Vandaag',ship:'Scheepsgegevens',workorder:'Nieuwe werkbon',objects:'Objecten',objectdetail:'Object',maintenance:'Onderhoud',inspections:'Inspecties',paintplan:'Verfplan',ballast:'Ballastplanner',logbook:'Logboek',projects:'Projecten',restoration:'Restauratie',victron:'Victron',costs:'Kosten',parts:'Restauratie-inkoop',documents:'Documenten',settings:'Instellingen',manuals:'Handleidingen',photos:"Foto\'s",inspiration:'Inspiratie'};
+const titles={dashboard:'Vandaag',assistant:'Assistent',ship:'Scheepsgegevens',workorder:'Nieuwe werkbon',objects:'Objecten',objectdetail:'Object',maintenance:'Onderhoud',inspections:'Inspecties',paintplan:'Verfplan',ballast:'Ballastplanner',logbook:'Logboek',projects:'Projecten',restoration:'Restauratie',victron:'Victron',costs:'Kosten',parts:'Restauratie-inkoop',documents:'Documenten',settings:'Instellingen',manuals:'Handleidingen',photos:"Foto\'s",inspiration:'Inspiratie'};
 let db=loadData(), currentView='dashboard', deferredPrompt=null;
 let driveTokenClient=null, driveAccessToken='', driveFileId=localStorage.getItem(DRIVE_FILE_ID_KEY)||'';
 let driveConnected=false, driveSyncing=false, driveSyncTimer=null, driveLastError='';
@@ -896,7 +896,7 @@ function navTo(view){
   currentView=view;
   $$('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+view));
   $$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-  const moreViews=['ship','photos','paintplan','restoration','manuals','projects','victron','costs','parts','documents','inspections','settings'];
+  const moreViews=['assistant','ship','photos','paintplan','restoration','manuals','projects','victron','costs','parts','documents','inspections','settings'];
   $('#mobileMoreBtn')?.classList.toggle('active',moreViews.includes(view));
   $('#pageTitle').textContent=titles[view]||view;
   renderView(view);
@@ -2615,7 +2615,7 @@ function renderSettings(){
     </div>
   </div>
 
-  <div class="card" style="margin-top:16px"><h3>Over deze app</h3><p><b>Versie ${esc(VMMS_BUILD)}</b></p><p>Deze update verplaatst grote foto’s naar Google Drive. GitHub bevat alleen de appcode en logo’s; foto’s worden lui geladen en lokaal als lichte miniatuur getoond.</p><p><b>${db.objects.length}</b> objecten · <b>${db.maintenance.length}</b> onderhoudstaken · <b>${db.workOrders.length}</b> werkbonnen</p></div>`;
+  <div class="card" style="margin-top:16px"><h3>Over deze app</h3><p><b>Versie ${esc(VMMS_BUILD)}</b></p><p>De VMMS Assistent doorzoekt je lokale scheepsdossier, inclusief de laatst gesynchroniseerde Drive-gegevens. Grote foto’s blijven in Google Drive.</p><p><b>${db.objects.length}</b> objecten · <b>${db.maintenance.length}</b> onderhoudstaken · <b>${db.workOrders.length}</b> werkbonnen</p></div>`;
 
   $('#settingsTheme')?.remove?.();
   $('#weatherSettingsForm').onsubmit=saveWeatherLocation;
@@ -2694,7 +2694,7 @@ $('#editDialog').addEventListener('click',e=>{if(e.target===$('#editDialog'))clo
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').hidden=false});
 $('#installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').hidden=true}};
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
-  navigator.serviceWorker.register('service-worker.js?v=4.1.0-drive-fotoarchief-20260718',{updateViaCache:'none'})
+  navigator.serviceWorker.register('service-worker.js?v=4.3.0-assistent-20260924',{updateViaCache:'none'})
     .then(registration=>registration.update())
     .catch(()=>{});
 }

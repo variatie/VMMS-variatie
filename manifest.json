@@ -1,7 +1,7 @@
 {
   "name": "VMMS Variatie",
   "short_name": "VMMS",
-  "description": "Onderhoudsmanagement voor de Variatie met fotoarchief in Google Drive",
+  "description": "Onderhoudsmanagement voor de Variatie met contextuele VMMS Assistent en Google Drive-synchronisatie",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#050607",
@@ -21,5 +21,5 @@
     }
   ],
   "id": "./",
-  "version": "4.1.0-drive-fotoarchief-20260718"
+  "version": "4.3.0-assistent-20260924"
 }

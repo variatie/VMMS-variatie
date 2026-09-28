@@ -1,4 +1,4 @@
-const CACHE='vmms-variatie-4.1.0-drive-fotoarchief-20260718';
+const CACHE='vmms-variatie-4.3.0-assistent-20260924';
 const CORE=[
   './',
   'index.html',
@@ -10,8 +10,11 @@ const CORE=[
   'inspiration-data.js?v=4.1.0-drive-fotoarchief-20260718',
   'paint-restoration-data.js?v=4.1.0-drive-fotoarchief-20260718',
   'mayday-maintenance-data.js?v=4.1.0-drive-fotoarchief-20260718',
-  'app.js?v=4.1.0-drive-fotoarchief-20260718',
-  'manifest.json?v=4.1.0-drive-fotoarchief-20260718',
+  'assistant-knowledge.js?v=4.3.0-assistent-20260924',
+  'assistant.css?v=4.3.0-assistent-20260924',
+  'app.js?v=4.3.0-assistent-20260924',
+  'assistant.js?v=4.3.0-assistent-20260924',
+  'manifest.json?v=4.3.0-assistent-20260924',
   'vmms-logo-192.png','vmms-logo-512.png','vmms-logo-full.png','restauratieplan.html'
 ];
 

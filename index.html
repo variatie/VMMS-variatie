@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050607">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<title>VMMS Variatie · 4.1 Drive Fotoarchief · 2026-07-18</title>
-<link rel="manifest" href="manifest.json?v=4.1.0-drive-fotoarchief-20260718">
+<title>VMMS Variatie · 4.3 Assistent · 2026-09-24</title>
+<link rel="manifest" href="manifest.json?v=4.3.0-assistent-20260924">
 <link rel="icon" href="vmms-logo-192.png" type="image/png">
 <link rel="stylesheet" href="styles.css?v=4.1.0-drive-fotoarchief-20260718">
+<link rel="stylesheet" href="assistant.css?v=4.3.0-assistent-20260924">
 </head>
 <body class="security-locked">
 
@@ -36,6 +37,7 @@
     <div class="brand"><div class="logo"><img src="vmms-logo-192.png" alt="VMMS Variatie logo"></div><div><h1>VMMS</h1><small>Variatie · 1925</small></div></div>
     <nav class="nav" id="desktopNav">
       <button data-view="dashboard" class="active">⌂ Dashboard</button>
+      <button data-view="assistant">✦ Assistent</button>
       <button data-view="ship">⚓ Scheepsgegevens</button>
       <button data-view="workorder">＋ Nieuwe werkbon</button>
       <button data-view="objects">◫ Objecten</button>
@@ -72,6 +74,7 @@
     </header>
     <div class="content">
       <section id="view-dashboard" class="view active"></section>
+      <section id="view-assistant" class="view"></section>
       <section id="view-ship" class="view"></section>
       <section id="view-workorder" class="view"></section>
       <section id="view-objects" class="view"></section>
@@ -102,6 +105,7 @@
   <button data-view="logbook"><b>≡</b>Logboek</button>
   <button id="mobileMoreBtn" type="button"><b>•••</b>Meer</button>
 </nav>
+<button id="assistantQuickButton" class="assistant-quick" type="button" aria-label="Open VMMS Assistent" title="Open VMMS Assistent">✦</button>
 <dialog id="editDialog" class="dialog">
   <div class="dialog-head"><h3 id="dialogTitle">Bewerken</h3><button class="icon-btn" id="dialogClose">✕</button></div>
   <div class="dialog-body" id="dialogBody"></div>
@@ -114,7 +118,9 @@
 <script src="inspiration-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
 <script src="paint-restoration-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
 <script src="mayday-maintenance-data.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="assistant-knowledge.js?v=4.3.0-assistent-20260924"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="app.js?v=4.1.0-drive-fotoarchief-20260718"></script>
+<script src="app.js?v=4.3.0-assistent-20260924"></script>
+<script src="assistant.js?v=4.3.0-assistent-20260924"></script>
 </body>
 </html>
