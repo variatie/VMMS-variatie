@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="nl"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>VMMS-assistentproef</title>
+<link rel="stylesheet" href="../styles.css"><link rel="stylesheet" href="../assistant.css">
+<body><h1 id="pageTitle">Assistent</h1><main id="view-assistant" class="view active"></main>
+<script>
+  window.__VMMS_TEST__ = true;
+  const fixtureDb = {
+    objects: [{id:'OBJ-1',name:'Bilgepomp',system:'Vuilwater',status:'Actief'}],
+    maintenance: [],workOrders: [],inspections: [],documents: [],certificates: [],manuals: [],projects: [],parts: [],assistantDocuments: []
+  };
+  window.VMMS_ASSISTANT_BRIDGE = {
+    getDb: () => fixtureDb,
+    addDocument: data => fixtureDb.assistantDocuments.push({id:'ADOC-TEST',updatedAt:new Date().toISOString(),...data}),
+    removeDocument: id => fixtureDb.assistantDocuments = fixtureDb.assistantDocuments.filter(item => item.id !== id),
+    openSource: () => {}, draftWorkOrder: () => {}
+  };
+</script>
+<script src="../assistant-knowledge.js"></script><script src="../assistant-diagrams.js"></script><script src="../assistant.js"></script>
+</body></html>

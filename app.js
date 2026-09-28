@@ -1,7 +1,7 @@
 
 (() => {
 'use strict';
-const VMMS_BUILD='4.3.0-assistent-20260924';
+const VMMS_BUILD='4.4.0-assistent-20260928';
 const STORAGE_KEY='vmms_variatie_data_v1';
 const DRIVE_ENABLED_KEY='vmms_drive_enabled_v1';
 const DRIVE_FILE_ID_KEY='vmms_drive_file_id_v1';
@@ -535,12 +535,15 @@ function unlockVmms(){
   securityBlockedUntil=0;
   securityMessage('');
   initializeVmms();
+  if(currentView==='assistant')window.VMMS_ASSISTANT_REFRESH?.();
   resetSecurityIdleTimer();
 }
 function lockVmms(message=''){
   clearTimeout(securityIdleTimer);
   clearTimeout(driveSyncTimer);
   sessionStorage.removeItem(SECURITY_SESSION_KEY);
+  sessionStorage.removeItem('vmms_assistant_history_v1');
+  $('#view-assistant')?.replaceChildren();
   driveAccessToken='';
   driveConnected=false;
   document.body.classList.add('security-locked');
@@ -2609,7 +2612,7 @@ function renderSettings(){
       <div class="list">
         <div class="list-item"><strong>Donkere modus</strong><small>Nieuwe zwarte donkere modus met rustigere kaarten en beter zichtbare achtergrond.</small><div class="row-actions"><button class="btn secondary" id="themeLight">Licht</button><button class="btn" id="themeDark">Zwart donker</button></div></div>
         <div class="list-item"><strong>Meldingen</strong><small>Status: ${esc(notificationsState)}. Je krijgt maximaal één onderhoudssamenvatting per dag.</small><div class="row-actions"><button class="btn secondary" id="enableNotifications">Meldingen aan</button><button class="btn secondary" id="testNotifications">Testmelding</button><button class="btn secondary" id="disableNotifications">Meldingen uit</button></div></div>
-        <div class="list-item"><strong>Beveiliging</strong><small>Google-login en pincode blijven actief. De app vergrendelt zichzelf na 15 minuten zonder gebruik.</small><div class="row-actions"><button class="btn secondary" id="settingsGoogleLogin">Google-account opnieuw koppelen</button><button class="btn secondary" id="lockNowFromSettings">Nu vergrendelen</button></div></div>
+        <div class="list-item"><strong>Privacy en schermslot</strong><small>De pincode vergrendelt het scherm na 15 minuten, maar is geen serverbeveiliging. De websitecode en ingebouwde voorbeeldkennis zijn openbaar; zet daar geen vertrouwelijke gegevens in. Je eigen VMMS-gegevens blijven in deze browser en de verborgen Drive-appmap. De assistent wist zijn tijdelijke gesprek bij vergrendelen.</small><div class="row-actions"><button class="btn secondary" id="settingsGoogleLogin">Google-account opnieuw koppelen</button><button class="btn secondary" id="lockNowFromSettings">Nu vergrendelen</button></div></div>
         <div class="list-item"><strong>Dagelijkse back-up</strong><small>Wordt bij synchronisatie automatisch in de verborgen Drive-appmap gemaakt en 14 dagen bewaard.</small></div>
       </div>
     </div>
@@ -2678,6 +2681,49 @@ function exportCsv(name,rows){
   const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
   download(name,'\ufeff'+[keys.map(q).join(';'),...rows.map(r=>keys.map(k=>q(r[k])).join(';'))].join('\n'),'text/csv;charset=utf-8');
 }
+window.VMMS_ASSISTANT_BRIDGE={
+  getDb:()=>document.body.classList.contains('security-locked')?{}:db,
+  addDocument(source){
+    if(document.body.classList.contains('security-locked'))throw new Error('Ontgrendel VMMS eerst.');
+    const title=String(source?.title||'').trim().slice(0,160);
+    const text=String(source?.text||'').trim().slice(0,80000);
+    if(!title||!text)throw new Error('Titel en documenttekst zijn verplicht.');
+    db.assistantDocuments=Array.isArray(db.assistantDocuments)?db.assistantDocuments:[];
+    const item={id:uid('ADOC-'),title,text,fileName:String(source?.fileName||'').slice(0,180),updatedAt:new Date().toISOString(),sourceType:'Door gebruiker toegevoegd'};
+    db.assistantDocuments.push(item);
+    try{saveData()}catch(error){db.assistantDocuments.pop();throw new Error('Opslag van dit apparaat is vol. Voeg een kortere tekst toe.')}
+    return item;
+  },
+  removeDocument(id){
+    if(document.body.classList.contains('security-locked'))throw new Error('Ontgrendel VMMS eerst.');
+    const before=Array.isArray(db.assistantDocuments)?db.assistantDocuments:[];
+    db.assistantDocuments=before.filter(item=>item.id!==id);
+    if(db.assistantDocuments.length!==before.length){try{saveData()}catch(error){db.assistantDocuments=before;throw error}}
+  },
+  openSource(source){
+    if(document.body.classList.contains('security-locked'))return;
+    const view=String(source?.view||'');
+    if(!titles[view])return;
+    navTo(view);
+    const id=String(source?.id||'');
+    if(!id)return;
+    const root=$('#view-'+view);
+    const row=[...(root?.querySelectorAll('.list-item, tr, article, .card')||[])].find(el=>el.textContent?.includes(id));
+    if(row){row.scrollIntoView({block:'center',behavior:'smooth'});row.classList.add('assistant-source-target');setTimeout(()=>row.classList.remove('assistant-source-target'),3500)}
+  },
+  draftWorkOrder(source){
+    if(document.body.classList.contains('security-locked'))return;
+    const objectId=String(source?.objectId||'');
+    if(objectId&&db.objects.some(item=>item.id===objectId))prefillWorkOrderObjectId=objectId;
+    navTo('workorder');
+    const form=$('#workOrderForm');if(!form)return;
+    form.elements.type.value=source?.type==='Inspectie/storing'||source?.type==='Storingskaart'?'Storing':'Reparatie';
+    form.elements.description.value=String(source?.title||'').slice(0,500);
+    form.elements.note.value=`Concept op basis van VMMS-bron ${String(source?.id||'')}. Controleer object, werkzaamheden en veiligheid vóór opslaan.`;
+    const notice=$('#view-workorder .note');if(notice)notice.textContent='Concept ingevuld vanuit de assistent. Controleer alles zelf; de werkbon is nog niet opgeslagen.';
+    form.elements.description.focus();
+  }
+};
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-view]');
   if(b){
@@ -2694,7 +2740,7 @@ $('#editDialog').addEventListener('click',e=>{if(e.target===$('#editDialog'))clo
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').hidden=false});
 $('#installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').hidden=true}};
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
-  navigator.serviceWorker.register('service-worker.js?v=4.3.0-assistent-20260924',{updateViaCache:'none'})
+  navigator.serviceWorker.register('service-worker.js?v=4.4.0-assistent-20260928',{updateViaCache:'none'})
     .then(registration=>registration.update())
     .catch(()=>{});
 }

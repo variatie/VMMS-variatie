@@ -25,6 +25,7 @@
   const normalize = value => String(value ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/(\d+)\s*v\b/g, '$1v').replace(/[^a-z0-9]+/g, ' ').trim();
 
   function getDb() {
+    if (window.VMMS_ASSISTANT_BRIDGE?.getDb) return window.VMMS_ASSISTANT_BRIDGE.getDb();
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) return JSON.parse(saved);
@@ -59,6 +60,7 @@
       view,
       title: String(title),
       detail,
+      date: item?.updatedAt || item?.date || item?.lastDate || item?.uploadedAt || '',
       text: `${title} ${detail} ${safeText(item)}`,
       raw: item
     };
@@ -78,6 +80,10 @@
     asArray(db.manuals).forEach(item => rows.push(record('Handleiding', 'manuals', item, ['title','name'], ['manufacturer','model','status','kind','note'])));
     asArray(db.projects).forEach(item => rows.push(record('Project', 'projects', item, ['name','title'], ['status','description','note','budget'])));
     asArray(db.parts).forEach(item => rows.push(record('Onderdeel', 'parts', item, ['name'], ['supplier','location','stock','minimum','note'])));
+    asArray(db.assistantDocuments).forEach(item => rows.push({
+      ...record('Documenttekst', 'assistant', item, ['title'], ['sourceType','fileName']),
+      text: `${item.title || ''} ${item.text || ''}`
+    }));
     asArray(window.VMMS_ASSISTANT_KNOWLEDGE).forEach(item => rows.push({
       id: item.id, type: item.type, view: item.type === 'Schema' ? 'assistant' : 'manuals', title: item.title,
       detail: item.status, text: `${item.title} ${item.status} ${asArray(item.tags).join(' ')} ${item.text}`, raw: item
@@ -106,9 +112,9 @@
         const weight = baseSet.has(term) ? 1 : .3;
         if (title.includes(term)) score += 8 * weight;
         if (detail.includes(term)) score += 4 * weight;
-        if (body.includes(term)) score += 1 * weight;
+        if (body.includes(term)) score += (item.type === 'Documenttekst' ? 5 : 1) * weight;
       });
-      if (normalize(query).includes(title) && title.length > 3) score += 12;
+      if (normalize(query) === title && title.length > 3) score += 12;
       return {...item, score};
     }).filter(item => item.score > 0).sort((a, b) => b.score - a.score || a.title.localeCompare(b.title, 'nl'));
     const minimum = scored[0]?.score >= 12 ? scored[0].score * .18 : .9;
@@ -137,13 +143,23 @@
     }).filter(entry => entry.overdue).sort((a,b) => (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0));
   }
 
-  function sourceCard(item) {
+  function excerpt(item, query = '') {
+    const value = String(item.raw?.text || item.detail || 'Open de bron voor meer informatie.');
+    const term = normalize(query).split(' ').find(word => word.length > 3 && !STOP_WORDS.has(word));
+    const at = term ? normalize(value).indexOf(term) : -1;
+    const start = at > 180 ? Math.max(0, at - 120) : 0;
+    return `${start ? '…' : ''}${value.slice(start, start + 520)}${value.length > start + 520 ? '…' : ''}`;
+  }
+
+  function sourceCard(item, query = '') {
     const statusClass = /storing|veilig|defect|kritisch/i.test(item.detail) ? 'warn' : '';
-    const summary = item.raw?.text || item.detail || 'Open de bron voor meer informatie.';
+    const sourceKey = `${item.type}:${item.id}`;
+    const canDraft = ['Object','Onderhoud','Werkbon','Inspectie/storing','Storingskaart'].includes(item.type);
+    const date = item.date && !Number.isNaN(new Date(item.date).getTime()) ? new Date(item.date).toLocaleDateString('nl-NL') : '';
     return `<article class="assistant-source ${statusClass}">
       <div class="assistant-source-head"><span>${esc(item.type)}</span><b>${esc(item.title)}</b></div>
-      <p>${esc(String(summary).slice(0, 520))}${String(summary).length > 520 ? '…' : ''}</p>
-      <div class="assistant-source-foot"><small>${esc(item.detail || item.id)}</small>${item.view && item.view !== 'assistant' ? `<button type="button" data-assistant-open="${esc(item.view)}">Open ${esc(item.view)}</button>` : ''}</div>
+      <p>${esc(excerpt(item, query))}</p>
+      <div class="assistant-source-foot"><small>${esc(item.id)}${date ? ` · ${esc(date)}` : ''} · ${esc(item.detail)}</small><span class="assistant-source-actions">${item.view && item.view !== 'assistant' ? `<button type="button" data-assistant-source="${esc(sourceKey)}">Open bron</button>` : ''}${canDraft ? `<button type="button" data-assistant-draft="${esc(sourceKey)}">Concept-werkbon</button>` : ''}</span></div>
     </article>`;
   }
 
@@ -154,14 +170,37 @@
       <div class="assistant-facts">
         <span><b>${asArray(db.objects).length}</b> objecten</span><span><b>${asArray(db.maintenance).length}</b> onderhoudstaken</span>
         <span><b>${asArray(db.workOrders).length}</b> werkbonnen</span><span><b>${asArray(db.inspections).length}</b> inspecties/storingen</span>
-      </div><p class="assistant-note">Laatste bekende Drive-sync: ${esc(lastSync)}.</p>`;
+      </div><p class="assistant-note">${asArray(db.assistantDocuments).length} zelf toegevoegde documentteksten · laatste bekende Drive-sync: ${esc(lastSync)}. Losse Drive-documenten worden alleen doorzocht nadat je hun tekst zelf aan VMMS hebt toegevoegd.</p>`;
   }
 
-  function answer(query) {
+  function contextualQuery(query, history) {
+    const normalized = normalize(query);
+    const previous = [...history].reverse().find(item => item.role === 'user')?.content;
+    if (!previous || normalized.split(' ').length > 9) return query;
+    if (/^(en |hoe zit het met|wat (met|dan)|die |deze |daar|daarover)/.test(normalized)) return `${previous} ${query}`;
+    return query;
+  }
+
+  function diagramKind(query) {
+    const text = normalize(query);
+    if (!/schema|overzicht|hoe loopt|hoe werkt/.test(text)) return '';
+    if (/sola|mar ix|verwarm|koel/.test(text)) return 'climate';
+    if (/drinkwater|vuilwater|douche|toilet|wc|wasmachine|vaatwasser|roef/.test(text)) return 'water';
+    if (/24v|230v|stroom|elektra|victron|generator/.test(text)) return 'electric';
+    return '';
+  }
+
+  function diagramHtml(kind) {
+    const diagram = window.VMMS_ASSISTANT_DIAGRAMS?.[kind];
+    if (!diagram) return '';
+    return `<section class="assistant-diagram"><div class="assistant-diagram-head"><h3>${esc(diagram.title)}</h3><span>Conceptschema</span></div><p>${esc(diagram.status)}</p><div class="assistant-diagram-rows">${diagram.rows.map(row => `<div class="assistant-diagram-row">${row.map((label, index) => `${index ? '<span class="assistant-diagram-arrow" aria-hidden="true">→</span>' : ''}<span class="assistant-diagram-node">${esc(label)}</span>`).join('')}</div>`).join('')}</div><p class="assistant-warning"><b>Nog controleren:</b> ${esc(diagram.unknown)}</p></section>`;
+  }
+
+  function answer(query, searchQuery = query) {
     const db = getDb();
     const corpus = buildCorpus(db);
     const normalized = normalize(query);
-    if (/wat weet|bronnen|gegevens|drive|context/.test(normalized)) return inventoryAnswer(db);
+    if (/^(welke context|gebruikte bronnen|wat weet je|welke bronnen|welke gegevens)/.test(normalized)) return inventoryAnswer(db);
     if (/achterstallig|te laat|verlopen|vandaag doen|urgent onderhoud/.test(normalized)) {
       const due = maintenanceDue(db).slice(0, 12);
       if (!due.length) return '<p>Ik zie geen berekenbaar achterstallig onderhoud. Taken zonder laatste datum of tellerstand kunnen hierbij buiten beeld blijven; controleer daarom ook de lijst <b>Nog invullen</b>.</p><button type="button" class="assistant-link" data-assistant-open="maintenance">Open onderhoud</button>';
@@ -171,12 +210,12 @@
       const open = asArray(db.inspections).filter(item => !/afgerond|gesloten|opgelost/i.test(item.status || '')).slice(0, 10);
       return open.length ? `<p>Ik zie <b>${open.length}</b> open of niet-afgesloten inspecties/storingen.</p>${open.map(item => sourceCard(record('Inspectie/storing','inspections',item,['title','description','issue','id'],['status','severity','zone','date','note']))).join('')}` : '<p>Ik zie geen open inspecties of storingen met een herkenbare status. Controleer de inspectielijst als statussen nog niet zijn ingevuld.</p>';
     }
-    const matches = search(corpus, query);
+    const matches = search(corpus, searchQuery);
     if (!matches.length) return '<p>Ik kan hierover nog geen betrouwbare informatie in het handboek of de huidige VMMS-data vinden.</p><p class="assistant-note">Probeer een objectnaam, systeem, foutcode of taak. Voor nieuwe kennis kun je een document of notitie aan VMMS/Drive toevoegen en daarna opnieuw synchroniseren.</p>';
     const top = matches[0];
-    const lead = top.raw?.text ? `<p>${esc(top.raw.text)}</p>` : `<p>Het beste passende resultaat is <b>${esc(top.title)}</b>. Open de bron voor de volledige registratie.</p>`;
+    const lead = top.raw?.text ? `<p>${esc(excerpt(top, query))}</p>` : `<p>Het beste passende resultaat is <b>${esc(top.title)}</b>. Open de bron voor de volledige registratie.</p>`;
     const warning = /historisch|verifieren|veiligheidskritisch|concept|onvolledig|storing/i.test(top.detail || '') ? '<p class="assistant-warning"><b>Let op:</b> deze informatie bevat een onzekerheid, historische situatie of veiligheidswaarschuwing. Controleer de actuele installatie en fabrikantgegevens.</p>' : '';
-    return `${lead}${warning}<h4>Gevonden bronnen</h4>${matches.slice(0,6).map(sourceCard).join('')}`;
+    return `${diagramHtml(diagramKind(searchQuery))}${lead}${warning}<h4>Gevonden bronnen</h4>${matches.slice(0,6).map(item => sourceCard(item, query)).join('')}`;
   }
 
   function loadHistory() {
@@ -195,6 +234,7 @@
   function render() {
     const root = document.querySelector('#view-assistant');
     if (!root) return;
+    const importOpen = Boolean(root.querySelector('.assistant-import')?.open);
     const db = getDb();
     const history = loadHistory();
     root.innerHTML = `<div class="assistant-shell">
@@ -208,8 +248,10 @@
       </div>
       <div id="assistantMessages" class="assistant-messages" aria-live="polite">${messagesHtml(history)}</div>
       <form id="assistantForm" class="assistant-form"><label class="sr-only" for="assistantInput">Vraag aan VMMS Assistent</label><textarea id="assistantInput" rows="2" placeholder="Bijvoorbeeld: wat moet ik controleren als de generator draait maar niet laadt?" required></textarea><button type="submit">Vraag</button></form>
-      <div class="assistant-footer"><span>Geen internet of externe AI nodig</span><button type="button" id="assistantClear">Gesprek wissen</button></div>
+      <details class="assistant-import"><summary>Documenttekst toevoegen aan mijn scheepsdossier</summary><p>Exporteer een Google Drive-document als .txt of .md, of plak de tekst. Alleen door jou gekozen tekst wordt opgeslagen in de VMMS-database en via de bestaande Drive-sync meegenomen. Gebruik dit niet voor vertrouwelijke documenten zolang de browseropslag niet extra is beveiligd.</p><form id="assistantImportForm"><label>Titel<input name="title" maxlength="160" placeholder="Bijvoorbeeld: handleiding Sola 15"></label><label>Tekstbestand (.txt of .md)<input name="file" type="file" accept=".txt,.md,text/plain,text/markdown"></label><label>Of plak documenttekst<textarea name="text" rows="4" maxlength="80000"></textarea></label><button type="submit">Tekst toevoegen</button><span id="assistantImportStatus" role="status"></span></form><h4>Toegevoegde teksten</h4><div class="assistant-import-list">${asArray(db.assistantDocuments).map(item => `<div><span>${esc(item.title)} <small>${esc(item.id)}</small></span><button type="button" data-assistant-remove="${esc(item.id)}">Verwijderen</button></div>`).join('') || '<p>Nog geen documenttekst toegevoegd.</p>'}</div></details>
+      <div class="assistant-footer"><span>Lokale zoekfunctie, geen externe AI · pincode is alleen een schermslot</span><button type="button" id="assistantClear">Gesprek wissen</button></div>
     </div>`;
+    if (importOpen) root.querySelector('.assistant-import').open = true;
     bind(root);
     requestAnimationFrame(() => { const messages = root.querySelector('#assistantMessages'); if (messages) messages.scrollTop = messages.scrollHeight; });
     document.querySelector('#pageTitle').textContent = 'Assistent';
@@ -221,7 +263,8 @@
     const clean = String(question || '').trim();
     if (!clean) return;
     const history = loadHistory();
-    history.push({role:'user', content:clean}, {role:'assistant', content:answer(clean)});
+    const searchQuery = contextualQuery(clean, history);
+    history.push({role:'user', content:clean}, {role:'assistant', content:answer(clean, searchQuery)});
     saveHistory(history);
     render();
   }
@@ -229,6 +272,10 @@
   function openView(view) {
     const target = [...document.querySelectorAll(`[data-view="${view}"]`)].find(button => !button.closest('#view-assistant'));
     if (target) target.click();
+  }
+
+  function findSource(key) {
+    return buildCorpus(getDb()).find(item => `${item.type}:${item.id}` === key);
   }
 
   function bind(root) {
@@ -239,15 +286,50 @@
     });
     root.querySelectorAll('[data-assistant-question]').forEach(button => button.addEventListener('click', () => ask(button.dataset.assistantQuestion)));
     root.querySelectorAll('[data-assistant-open]').forEach(button => button.addEventListener('click', () => openView(button.dataset.assistantOpen)));
+    root.querySelectorAll('[data-assistant-source]').forEach(button => button.addEventListener('click', () => {
+      const source = findSource(button.dataset.assistantSource);
+      if (source) window.VMMS_ASSISTANT_BRIDGE?.openSource({view:source.view,id:source.id,title:source.title});
+    }));
+    root.querySelectorAll('[data-assistant-draft]').forEach(button => button.addEventListener('click', () => {
+      const source = findSource(button.dataset.assistantDraft);
+      if (!source) return;
+      window.VMMS_ASSISTANT_BRIDGE?.draftWorkOrder({id:source.id,title:source.title,type:source.type,objectId:source.raw?.objectId || (source.type === 'Object' ? source.id : '')});
+    }));
+    root.querySelector('#assistantImportForm')?.addEventListener('submit', async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const status = root.querySelector('#assistantImportStatus');
+      const file = form.elements.file.files?.[0];
+      try {
+        if (file && file.size > 160000) throw new Error('Kies een tekstbestand kleiner dan 160 kB.');
+        const value = String(form.elements.text.value || '').trim() || (file ? await file.text() : '');
+        if (!value.trim()) throw new Error('Plak tekst of kies een tekstbestand.');
+        if (value.length > 80000) throw new Error('De documenttekst is te lang (maximaal 80.000 tekens).');
+        const title = String(form.elements.title.value || file?.name?.replace(/\.[^.]+$/, '') || '').trim();
+        if (!title) throw new Error('Vul een titel in.');
+        window.VMMS_ASSISTANT_BRIDGE?.addDocument({title,text:value,fileName:file?.name || ''});
+        render();
+        const updated = root.querySelector('#assistantImportStatus');
+        if (updated) updated.textContent = 'Documenttekst toegevoegd. Synchroniseer Drive voor gebruik op andere apparaten.';
+      } catch (error) { if (status) status.textContent = error.message || 'Importeren mislukt.'; }
+    });
+    root.querySelectorAll('[data-assistant-remove]').forEach(button => button.addEventListener('click', () => {
+      const item = asArray(getDb().assistantDocuments).find(entry => entry.id === button.dataset.assistantRemove);
+      if (item && window.confirm(`Documenttekst "${item.title}" verwijderen uit VMMS?`)) {
+        window.VMMS_ASSISTANT_BRIDGE?.removeDocument(item.id);render();
+      }
+    }));
     root.querySelector('#assistantClear')?.addEventListener('click', () => { sessionStorage.removeItem(HISTORY_KEY); render(); });
   }
 
   function init() {
+    window.VMMS_ASSISTANT_REFRESH = render;
     document.querySelector('#assistantQuickButton')?.addEventListener('click', () => openView('assistant'));
     document.querySelectorAll('[data-view="assistant"]').forEach(button => button.addEventListener('click', () => setTimeout(render, 0)));
     if (document.querySelector('#view-assistant.active')) render();
   }
 
+  if (window.__VMMS_TEST__) window.VMMS_ASSISTANT_TEST = {normalize,buildCorpus,search,contextualQuery,diagramKind,diagramHtml,answer};
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, {once:true});
   else init();
 })();
